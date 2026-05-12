@@ -1,0 +1,111 @@
+@APIAvanzados_HostAddress = http://localhost:5030
+@APIKey = ak_live_programacion_8f4a9c2e7b1d4f63a92c0e55d71b6a30
+
+GET {{APIAvanzados_HostAddress}}/api/seguridad/publico
+Accept: application/json
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/seguridad/privado
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/clientes
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/clientes
+X-API-Key: {{APIKey}}
+Content-Type: application/json
+
+{
+  "nombre": "Ana Perez",
+  "correo": "ana.perez@programacion.com",
+  "telefono": "809-555-1234"
+}
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/clientes/1
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/categorias
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/categorias
+X-API-Key: {{APIKey}}
+Content-Type: application/json
+
+{
+  "nombre": "Libros",
+  "descripcion": "Libros tecnicos y academicos"
+}
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/proveedores
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/proveedores
+X-API-Key: {{APIKey}}
+Content-Type: application/json
+
+{
+  "nombre": "Programacion Store",
+  "correo": "ventas@programacion.com",
+  "telefono": "809-555-4444"
+}
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/productos
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/productos
+X-API-Key: {{APIKey}}
+Content-Type: application/json
+
+{
+  "nombre": "Monitor",
+  "precio": 12000,
+  "existencia": 10,
+  "categoriaId": 1,
+  "proveedorId": 1
+}
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/ordenes
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/ordenes
+X-API-Key: {{APIKey}}
+Content-Type: application/json
+
+{
+  "clienteId": 1,
+  "fecha": "2026-05-12T14:00:00",
+  "total": 12000,
+  "estado": "Pendiente"
+}
+
+###

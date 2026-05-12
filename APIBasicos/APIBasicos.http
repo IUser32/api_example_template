@@ -1,0 +1,107 @@
+@api_example_template_HostAddress = http://localhost:5020
+
+GET {{api_example_template_HostAddress}}/api/productos
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/productos/1
+Accept: application/json
+
+###
+
+POST {{api_example_template_HostAddress}}/api/productos
+Content-Type: application/json
+
+{
+  "nombre": "Monitor",
+  "precio": 12000,
+  "cantidadDisponible": 10
+}
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/operaciones/sumar?numero1=10&numero2=5
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/operaciones/dividir?numero1=10&numero2=2
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/conversiones/celsius-a-fahrenheit?celsius=30
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/calculos-comerciales/total-con-itbis?monto=1000
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/rutas/saludo?nombre=Ana
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/rutas/saludo/Ana
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/rutas/productos/electronica/15
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/rutas/clientes/7/ordenes/25
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/rutas/buscar
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/rutas/buscar/laptop
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/rutas/fechas/2026/5/12
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/estado
+Accept: application/json
+
+###
+
+GET {{api_example_template_HostAddress}}/api/endpoints-basicos/prestamos/interes-simple?monto=100000&tasaAnual=12&anios=2
+Accept: application/json
+
+###
+
+POST {{api_example_template_HostAddress}}/api/endpoints-basicos/prestamos/cuota-mensual
+Content-Type: application/json
+
+{
+  "monto": 100000,
+  "tasaAnual": 12,
+  "meses": 24
+}
+
+###
+
+POST {{api_example_template_HostAddress}}/api/endpoints-basicos/estadisticas/promedio
+Content-Type: application/json
+
+{
+  "numeros": [85, 90, 78, 92]
+}
+
+###
