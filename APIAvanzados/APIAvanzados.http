@@ -12,30 +12,6 @@ Accept: application/json
 
 ###
 
-GET {{APIAvanzados_HostAddress}}/api/clientes
-X-API-Key: {{APIKey}}
-Accept: application/json
-
-###
-
-POST {{APIAvanzados_HostAddress}}/api/clientes
-X-API-Key: {{APIKey}}
-Content-Type: application/json
-
-{
-  "nombre": "Ana Perez",
-  "correo": "ana.perez@programacion.com",
-  "telefono": "809-555-1234"
-}
-
-###
-
-GET {{APIAvanzados_HostAddress}}/api/clientes/1
-X-API-Key: {{APIKey}}
-Accept: application/json
-
-###
-
 GET {{APIAvanzados_HostAddress}}/api/categorias
 X-API-Key: {{APIKey}}
 Accept: application/json
@@ -71,13 +47,25 @@ Content-Type: application/json
 
 ###
 
-GET {{APIAvanzados_HostAddress}}/api/productos
+GET {{APIAvanzados_HostAddress}}/api/v1/productos
 X-API-Key: {{APIKey}}
 Accept: application/json
 
 ###
 
-POST {{APIAvanzados_HostAddress}}/api/productos
+GET {{APIAvanzados_HostAddress}}/api/v1/productos/paginado?pagina=1&tamanoPagina=5
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/v1/productos/paginado?pagina=1&tamanoPagina=10&buscar=monitor&ordenarPor=precio&direccion=desc
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/v1/productos
 X-API-Key: {{APIKey}}
 Content-Type: application/json
 
@@ -91,13 +79,37 @@ Content-Type: application/json
 
 ###
 
-GET {{APIAvanzados_HostAddress}}/api/ordenes
+GET {{APIAvanzados_HostAddress}}/api/v1/clientes
 X-API-Key: {{APIKey}}
 Accept: application/json
 
 ###
 
-POST {{APIAvanzados_HostAddress}}/api/ordenes
+GET {{APIAvanzados_HostAddress}}/api/v1/clientes/paginado?pagina=1&tamanoPagina=5&ordenarPor=nombre&direccion=asc
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/v1/clientes
+X-API-Key: {{APIKey}}
+Content-Type: application/json
+
+{
+  "nombre": "Ana Perez",
+  "correo": "ana.perez@programacion.com",
+  "telefono": "809-555-1234"
+}
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/v1/ordenes
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/v1/ordenes
 X-API-Key: {{APIKey}}
 Content-Type: application/json
 
@@ -106,6 +118,83 @@ Content-Type: application/json
   "fecha": "2026-05-12T14:00:00",
   "total": 12000,
   "estado": "Pendiente"
+}
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/v2/productos
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/v2/productos?pagina=2&tamanoPagina=5&ordenarPor=precio&direccion=desc
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/v2/clientes?pagina=1&tamanoPagina=10&buscar=ana
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+GET {{APIAvanzados_HostAddress}}/api/v2/ordenes?pagina=1&tamanoPagina=10&ordenarPor=fecha&direccion=desc
+X-API-Key: {{APIKey}}
+Accept: application/json
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/v2/productos
+X-API-Key: {{APIKey}}
+Content-Type: application/json
+
+{
+  "nombre": "Teclado mecanico",
+  "precio": 3500,
+  "existencia": 25,
+  "categoriaId": 1,
+  "proveedorId": 1
+}
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/v1/clientes
+X-API-Key: {{APIKey}}
+Content-Type: application/json
+
+{
+  "nombre": "AB",
+  "correo": "correo-invalido",
+  "telefono": "abc"
+}
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/v1/ordenes
+X-API-Key: {{APIKey}}
+Content-Type: application/json
+
+{
+  "clienteId": 0,
+  "fecha": "2026-05-12T14:00:00",
+  "total": 0,
+  "estado": "Inventado"
+}
+
+###
+
+POST {{APIAvanzados_HostAddress}}/api/v1/productos
+X-API-Key: {{APIKey}}
+Content-Type: application/json
+
+{
+  "nombre": "X",
+  "precio": -10,
+  "existencia": -5,
+  "categoriaId": 0,
+  "proveedorId": 0
 }
 
 ###

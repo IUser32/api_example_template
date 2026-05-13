@@ -1,13 +1,16 @@
 using APIAvanzados.Data;
 using APIAvanzados.Models;
+using APIAvanzados.Models.Paginacion;
 using APIAvanzados.Seguridad;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIAvanzados.Controllers;
+namespace APIAvanzados.Controllers.V2;
 
 [ApiController]
-[Route("api/clientes")]
+[ApiVersion("2.0")]
+[Route("api/v{version:apiVersion}/clientes")]
 [ApiKey]
 public class ClientesController : ControllerBase
 {
@@ -19,9 +22,39 @@ public class ClientesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Cliente>>> ObtenerTodos()
+    public async Task<ActionResult<RespuestaPaginada<Cliente>>> ObtenerTodos([FromQuery] ParametrosPaginacion parametros)
     {
-        return Ok(await _context.Clientes.ToListAsync());
+        var consulta = _context.Clientes.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(parametros.Buscar))
+        {
+            var termino = parametros.Buscar.ToLower();
+            consulta = consulta.Where(c =>
+                c.Nombre.ToLower().Contains(termino) ||
+                c.Correo.ToLower().Contains(termino));
+        }
+
+        var ascendente = parametros.Direccion.ToLower() != "desc";
+        consulta = parametros.OrdenarPor?.ToLower() switch
+        {
+            "nombre" => ascendente ? consulta.OrderBy(c => c.Nombre) : consulta.OrderByDescending(c => c.Nombre),
+            "correo" => ascendente ? consulta.OrderBy(c => c.Correo) : consulta.OrderByDescending(c => c.Correo),
+            _ => consulta.OrderBy(c => c.Id)
+        };
+
+        var total = await consulta.CountAsync();
+        var datos = await consulta
+            .Skip((parametros.Pagina - 1) * parametros.TamanoPagina)
+            .Take(parametros.TamanoPagina)
+            .ToListAsync();
+
+        return Ok(new RespuestaPaginada<Cliente>
+        {
+            Datos = datos,
+            TotalRegistros = total,
+            PaginaActual = parametros.Pagina,
+            TamanoPagina = parametros.TamanoPagina
+        });
     }
 
     [HttpGet("{id:int}")]
@@ -43,7 +76,7 @@ public class ClientesController : ControllerBase
         _context.Clientes.Add(cliente);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(ObtenerPorId), new { id = cliente.Id }, cliente);
+        return CreatedAtAction(nameof(ObtenerPorId), new { id = cliente.Id, version = "2.0" }, cliente);
     }
 
     [HttpPut("{id:int}")]

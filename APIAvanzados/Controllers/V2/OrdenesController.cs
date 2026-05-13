@@ -1,13 +1,16 @@
 using APIAvanzados.Data;
 using APIAvanzados.Models;
+using APIAvanzados.Models.Paginacion;
 using APIAvanzados.Seguridad;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIAvanzados.Controllers;
+namespace APIAvanzados.Controllers.V2;
 
 [ApiController]
-[Route("api/ordenes")]
+[ApiVersion("2.0")]
+[Route("api/v{version:apiVersion}/ordenes")]
 [ApiKey]
 public class OrdenesController : ControllerBase
 {
@@ -19,9 +22,38 @@ public class OrdenesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Orden>>> ObtenerTodas()
+    public async Task<ActionResult<RespuestaPaginada<Orden>>> ObtenerTodas([FromQuery] ParametrosPaginacion parametros)
     {
-        return Ok(await _context.Ordenes.ToListAsync());
+        var consulta = _context.Ordenes.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(parametros.Buscar))
+        {
+            var termino = parametros.Buscar.ToLower();
+            consulta = consulta.Where(o => o.Estado.ToLower().Contains(termino));
+        }
+
+        var ascendente = parametros.Direccion.ToLower() != "desc";
+        consulta = parametros.OrdenarPor?.ToLower() switch
+        {
+            "fecha" => ascendente ? consulta.OrderBy(o => o.Fecha) : consulta.OrderByDescending(o => o.Fecha),
+            "total" => ascendente ? consulta.OrderBy(o => o.Total) : consulta.OrderByDescending(o => o.Total),
+            "estado" => ascendente ? consulta.OrderBy(o => o.Estado) : consulta.OrderByDescending(o => o.Estado),
+            _ => consulta.OrderBy(o => o.Id)
+        };
+
+        var total = await consulta.CountAsync();
+        var datos = await consulta
+            .Skip((parametros.Pagina - 1) * parametros.TamanoPagina)
+            .Take(parametros.TamanoPagina)
+            .ToListAsync();
+
+        return Ok(new RespuestaPaginada<Orden>
+        {
+            Datos = datos,
+            TotalRegistros = total,
+            PaginaActual = parametros.Pagina,
+            TamanoPagina = parametros.TamanoPagina
+        });
     }
 
     [HttpGet("{id:int}")]
@@ -45,7 +77,7 @@ public class OrdenesController : ControllerBase
         _context.Ordenes.Add(orden);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(ObtenerPorId), new { id = orden.Id }, orden);
+        return CreatedAtAction(nameof(ObtenerPorId), new { id = orden.Id, version = "2.0" }, orden);
     }
 
     [HttpPut("{id:int}")]

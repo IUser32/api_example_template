@@ -1,13 +1,16 @@
 using APIAvanzados.Data;
 using APIAvanzados.Models;
+using APIAvanzados.Models.Paginacion;
 using APIAvanzados.Seguridad;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIAvanzados.Controllers;
+namespace APIAvanzados.Controllers.V2;
 
 [ApiController]
-[Route("api/productos")]
+[ApiVersion("2.0")]
+[Route("api/v{version:apiVersion}/productos")]
 [ApiKey]
 public class ProductosController : ControllerBase
 {
@@ -19,9 +22,38 @@ public class ProductosController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Producto>>> ObtenerTodos()
+    public async Task<ActionResult<RespuestaPaginada<Producto>>> ObtenerTodos([FromQuery] ParametrosPaginacion parametros)
     {
-        return Ok(await _context.Productos.ToListAsync());
+        var consulta = _context.Productos.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(parametros.Buscar))
+        {
+            var termino = parametros.Buscar.ToLower();
+            consulta = consulta.Where(p => p.Nombre.ToLower().Contains(termino));
+        }
+
+        var ascendente = parametros.Direccion.ToLower() != "desc";
+        consulta = parametros.OrdenarPor?.ToLower() switch
+        {
+            "nombre" => ascendente ? consulta.OrderBy(p => p.Nombre) : consulta.OrderByDescending(p => p.Nombre),
+            "precio" => ascendente ? consulta.OrderBy(p => p.Precio) : consulta.OrderByDescending(p => p.Precio),
+            "existencia" => ascendente ? consulta.OrderBy(p => p.Existencia) : consulta.OrderByDescending(p => p.Existencia),
+            _ => consulta.OrderBy(p => p.Id)
+        };
+
+        var total = await consulta.CountAsync();
+        var datos = await consulta
+            .Skip((parametros.Pagina - 1) * parametros.TamanoPagina)
+            .Take(parametros.TamanoPagina)
+            .ToListAsync();
+
+        return Ok(new RespuestaPaginada<Producto>
+        {
+            Datos = datos,
+            TotalRegistros = total,
+            PaginaActual = parametros.Pagina,
+            TamanoPagina = parametros.TamanoPagina
+        });
     }
 
     [HttpGet("{id:int}")]
@@ -43,7 +75,7 @@ public class ProductosController : ControllerBase
         _context.Productos.Add(producto);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(ObtenerPorId), new { id = producto.Id }, producto);
+        return CreatedAtAction(nameof(ObtenerPorId), new { id = producto.Id, version = "2.0" }, producto);
     }
 
     [HttpPut("{id:int}")]

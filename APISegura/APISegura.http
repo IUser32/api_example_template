@@ -1,0 +1,116 @@
+@APISegura_HostAddress = http://localhost:5040
+@Token = pegar-aqui-el-token-recibido-en-login
+
+GET {{APISegura_HostAddress}}/api/publico/saludo
+Accept: application/json
+
+###
+
+GET {{APISegura_HostAddress}}/api/publico/info
+Accept: application/json
+
+###
+
+POST {{APISegura_HostAddress}}/api/auth/registrar
+Content-Type: application/json
+
+{
+  "nombre": "Maria Garcia",
+  "nombreUsuario": "maria",
+  "correo": "maria@apisegura.com",
+  "contrasena": "Maria123!"
+}
+
+###
+
+POST {{APISegura_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "nombreUsuario": "estudiante",
+  "contrasena": "Estudiante123!"
+}
+
+###
+
+POST {{APISegura_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "nombreUsuario": "admin",
+  "contrasena": "Admin123!"
+}
+
+###
+
+POST {{APISegura_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "nombreUsuario": "estudiante",
+  "contrasena": "claveIncorrecta"
+}
+
+###
+
+GET {{APISegura_HostAddress}}/api/tareas
+Accept: application/json
+
+###
+
+GET {{APISegura_HostAddress}}/api/tareas
+Authorization: Bearer {{Token}}
+Accept: application/json
+
+###
+
+POST {{APISegura_HostAddress}}/api/tareas
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "titulo": "Estudiar JWT",
+  "descripcion": "Repasar claims, firma y validacion de tokens",
+  "completada": false
+}
+
+###
+
+PUT {{APISegura_HostAddress}}/api/tareas/1
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "titulo": "Estudiar JWT (completado)",
+  "descripcion": "Listo",
+  "completada": true
+}
+
+###
+
+DELETE {{APISegura_HostAddress}}/api/tareas/1
+Authorization: Bearer {{Token}}
+
+###
+
+GET {{APISegura_HostAddress}}/api/admin/usuarios
+Authorization: Bearer {{Token}}
+Accept: application/json
+
+###
+
+GET {{APISegura_HostAddress}}/api/admin/tareas
+Authorization: Bearer {{Token}}
+Accept: application/json
+
+###
+
+PUT {{APISegura_HostAddress}}/api/admin/usuarios/2/rol?rol=Admin
+Authorization: Bearer {{Token}}
+
+###
+
+DELETE {{APISegura_HostAddress}}/api/admin/usuarios/3
+Authorization: Bearer {{Token}}
+
+###
