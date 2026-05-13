@@ -27,7 +27,7 @@ public class JwtService
             new(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
             new(JwtRegisteredClaimNames.UniqueName, usuario.NombreUsuario),
             new(JwtRegisteredClaimNames.Email, usuario.Correo),
-            new(ClaimTypes.Role, usuario.Rol),
+            new("role", usuario.Rol),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
